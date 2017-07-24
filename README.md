@@ -1,4 +1,4 @@
-# mmc
+# mmc [![Build Status](https://travis-ci.org/NARKOZ/mmc.svg)](https://travis-ci.org/NARKOZ/mmc)
 
 mmc is a simple commandline currency converter.
 
