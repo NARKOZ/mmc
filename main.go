@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -22,7 +21,7 @@ func loadCurrencies() CurrencyData {
 	var data CurrencyData
 
 	// List of all currencies from http://free.currencyconverterapi.com/api/v3/currencies
-	file, _ := ioutil.ReadFile("./currencies.json")
+	file, _ := Asset("data/currencies.json")
 	json.Unmarshal(file, &data)
 
 	return data
