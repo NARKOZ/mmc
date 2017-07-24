@@ -35,9 +35,9 @@ func getCurrencyNames(from string, to string) (string, string) {
 	return fromCurrencyName, toCurrencyName
 }
 
-func isValidCurrency(currencyId string) bool {
+func isValidCurrency(currencyID string) bool {
 	data := loadCurrencies()
-	currencyName := data.Currencies[currencyId].Name
+	currencyName := data.Currencies[currencyID].Name
 
 	return currencyName != ""
 }
@@ -47,8 +47,8 @@ func handleError(message string) {
 	os.Exit(1)
 }
 
-func getRate(rateId string) float64 {
-	url := "http://free.currencyconverterapi.com/api/v3/convert?q=" + rateId + "&compact=ultra"
+func getRate(rateID string) float64 {
+	url := "http://free.currencyconverterapi.com/api/v3/convert?q=" + rateID + "&compact=ultra"
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -62,9 +62,9 @@ func getRate(rateId string) float64 {
 		handleError("Error fetching data")
 	}
 
-	rate := data[rateId]
+	rate := data[rateID]
 	if rate == nil {
-		handleError("No results for currency rate " + rateId)
+		handleError("No results for currency rate " + rateID)
 	}
 
 	return rate.(float64)
