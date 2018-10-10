@@ -70,26 +70,33 @@ func getRate(rateID string) float64 {
 	return rate.(float64)
 }
 
-func validArgs(args []string) (float64, string, string) {
+func parseArgs(args []string) (float64, string, string) {
+
+	usage := "Usage: mmc <amount> <source_currency> to <target_currency>\n" +
+		"Example: mmc 100 USD to AUD"
+
 	if len(args) < 5 {
-		handleError("Insufficient arguments")
+		handleError(fmt.Sprintf("Insufficient arguments\n%s", usage))
 	}
 
 	from, to := strings.ToUpper(args[2]), strings.ToUpper(args[4])
-	if !isValidCurrency(from) || !isValidCurrency(to) {
-		handleError("Invalid currency code")
+	if !isValidCurrency(from) {
+		handleError(fmt.Sprintf("Invalid or unsupported currency: %s", from))
+	}
+	if !isValidCurrency(to) {
+		handleError(fmt.Sprintf("Invalid or unsupported currency: %s", to))
 	}
 
 	amount, err := strconv.ParseFloat(args[1], 64)
 	if err != nil {
-		handleError("Invalid value for conversion")
+		handleError(fmt.Sprintf("Invalid value for conversion: %s", args[1]))
 	}
 
 	return amount, from, to
 }
 
 func main() {
-	amount, from, to := validArgs(os.Args)
+	amount, from, to := parseArgs(os.Args)
 
 	result := amount * getRate(from+"_"+to)
 	fromCurrency, toCurrency := getCurrencyNames(from, to)

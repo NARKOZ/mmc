@@ -6,9 +6,9 @@ import (
 	"gopkg.in/jarcoal/httpmock.v1"
 )
 
-func TestValidArgs(t *testing.T) {
+func TestParseArgs(t *testing.T) {
 	args := []string{"", "9000.3", "eur", "to", "usd"}
-	amount, from, to := validArgs(args)
+	amount, from, to := parseArgs(args)
 
 	if amount != 9000.3 {
 		t.Fatalf("Expected '9000.3' got '%v'", amount)
