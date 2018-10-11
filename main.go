@@ -70,10 +70,23 @@ func getRate(rateID string) float64 {
 	return rate.(float64)
 }
 
+func listSupportedCurrencies() {
+	fmt.Println("Supported currencies:")
+	for id, currency := range loadCurrencies().Currencies {
+		fmt.Printf("%s\t%s\n", id, currency.Name)
+	}
+}
+
 func parseArgs(args []string) (float64, string, string) {
 
+	usageList := "Use \"mmc list\" to list all currencies supported by mmc."
 	usage := "Usage: mmc <amount> <source_currency> to <target_currency>\n" +
-		"Example: mmc 100 USD to AUD"
+		"Example: mmc 100 USD to AUD\n" + usageList
+
+	if len(args) == 2 && args[1] == "list" {
+		listSupportedCurrencies()
+		os.Exit(0)
+	}
 
 	if len(args) < 5 {
 		handleError(fmt.Sprintf("Insufficient arguments\n%s", usage))
@@ -81,10 +94,10 @@ func parseArgs(args []string) (float64, string, string) {
 
 	from, to := strings.ToUpper(args[2]), strings.ToUpper(args[4])
 	if !isValidCurrency(from) {
-		handleError(fmt.Sprintf("Invalid or unsupported currency: %s", from))
+		handleError(fmt.Sprintf("Invalid or unsupported currency: %s\n\n%s", from, usageList))
 	}
 	if !isValidCurrency(to) {
-		handleError(fmt.Sprintf("Invalid or unsupported currency: %s", to))
+		handleError(fmt.Sprintf("Invalid or unsupported currency: %s\n\n%s", to, usageList))
 	}
 
 	amount, err := strconv.ParseFloat(args[1], 64)
@@ -96,6 +109,7 @@ func parseArgs(args []string) (float64, string, string) {
 }
 
 func main() {
+
 	amount, from, to := parseArgs(os.Args)
 
 	result := amount * getRate(from+"_"+to)
