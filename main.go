@@ -47,8 +47,8 @@ func handleError(message string) {
 	os.Exit(1)
 }
 
-func getRate(rateID string) float64 {
-	url := "http://free.currencyconverterapi.com/api/v3/convert?q=" + rateID + "&compact=ultra"
+func getRate(from string, to string) float64 {
+	url := "https://api.exchangeratesapi.io/latest?base=" + from
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -62,9 +62,15 @@ func getRate(rateID string) float64 {
 		handleError("Error fetching data")
 	}
 
-	rate := data[rateID]
+	if data["error"] != nil {
+		handleError(data["error"].(string))
+	}
+
+	rates := data["rates"].(map[string]interface{})
+
+	rate := rates[to]
 	if rate == nil {
-		handleError("No results for currency rate " + rateID)
+		handleError("No results for currency rate " + to)
 	}
 
 	return rate.(float64)
@@ -112,7 +118,7 @@ func main() {
 
 	amount, from, to := parseArgs(os.Args)
 
-	result := amount * getRate(from+"_"+to)
+	result := amount * getRate(from, to)
 	fromCurrency, toCurrency := getCurrencyNames(from, to)
 
 	fmt.Println(amount, fromCurrency, "=", result, toCurrency)
